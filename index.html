@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>AJAX API PROJECT BY IDAN DAMTI</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+  <script defer src="https://use.fontawesome.com/releases/v5.0.10/js/all.js"></script>
+  <script src="js/jquery.arctext.js"></script>
+  <script src="js/script.js"></script>
+  <script src="js/apiscript.js"></script>
+
+
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="nav-link" href="#" data-toggle="modal" data-target="#newPlaylistPopup"><span class="add"><i
+                class="fas fa-plus-circle"></i></span>Add new playlist</a>
+      </li>
+    </ul>
+    <form class="form-inline my-2 my-lg-0">
+      <div class="input-group">
+        <div class="input-group-addon">
+          <input class="form-control mr-sm-2" type="search" placeholder="Search Playlist" aria-label="Search Playlist">
+          <span class="searchicon fa fa-search"></span>
+        </div>
+      </div>
+    </form>
+  </div>
+</nav>
+
+<!-- title for my project -->
+
+<div class="jumbotron jumbotron-fluid">
+  <div class="container">
+    <h1 class="display-4">Playlist Project</h1>
+    <p class="lead">By Idan Damti</p>
+  </div>
+</div>
+
+
+<!-- end of title -->
+
+<div class="showhideplayer"></div>
+
+<div class="row" id="allplaylist"></div>
+
+
+<!-- add new playlist Modal -->
+
+<div class="modal fade" id="newPlaylistPopup" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="step1">
+        <div class="modal-header">
+          <h5 class="modal-title" >Add New Playlist</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-sm-8">
+              <form>
+                <div class="form-group">
+                  <label for="playlistName">Playlist Name</label>
+                  <input type="text" class="form-control" value="" name="playlistName" id="playlistName" placeholder="e.g. Blood Sugar Sex Magic">
+                </div>
+                <div class="form-group">
+                  <label for="formGroupExampleInput2">Playlist URL</label>
+                  <input type="text" class="form-control" name="playlistUrl" id="playlistUrl" placeholder="http://"
+                         onfocusout="displayImage(this)">
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-danger nextstep">Next</button>
+                  <button class="btn btn-danger" type="reset">Reset Fields</button>
+                </div>
+              </form>
+            </div>
+            <div class="col-sm-4 ">
+              <img id="playlistImg" src="images/placeholder.jpg" width="230" height="230">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- model step 2 -->
+
+      <div class="step2">
+        <div class="modal-header">
+          <h5 class="modal-title" >Add Playlist Songs</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-sm-12">
+
+              <div id="songListWrapper">
+                <div class="row list">
+                  <div class="col">
+                    <input type="text" class="form-control" name="songUrl" data-id="songUrl" placeholder="Song URL">
+                  </div>
+                  <div class="col">
+                    <input type="text" class="form-control" name="songName" data-id="songName" placeholder="Song Name">
+                  </div>
+                </div>
+              </div>            
+              <div class="modal-footer noborder">
+                <button type="button" class="btn btn-danger addanother"><i class="fas fa-plus-circle"></i><span> Add Another Song</span>
+                </button>
+                <span class="float-sm-right"><button class="btn btn-danger" data-dismiss="modal" id="savePlayList" type="button">Finish and Save</button></span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <!-- end of step 2 -->
+    </div>
+  </div>
+</div>
+
+<!-- end of modal -->
+
+ <!-- Confirm delete Modal -->
+ <div class="modal fade" id="deletePopup" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+      <div class="modal-header">        
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+          </button>
+      </div>
+      <div class="modal-body" style="text-align:center; font-size:24px;">
+          ARE YOU SURE?
+      </div>
+      <div class="modal-footer">
+          <button type="button" class="btn btn-primary deletePlaylist" data-dismiss="modal">YES, Delete</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>        
+      </div>
+      </div>
+  </div>
+  </div>
+
+  <!-- end of delete modal -->
+
+
+<!-- model edit songs of playlist-->
+<div class="modal fade" id="editPlaylistSongs" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content">
+           <!-- model step 2 -->
+
+           <div class="step2">
+              <div class="modal-header">
+                <h5 class="modal-title" id="editTitle">Edit Playlist Songs</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <div class="row">
+                  <div class="col-sm-12">
+      
+                    <div id="songSingleListWrapper">
+                      <div class="row list">
+                        <div class="col">
+                          <input type="text" class="form-control songUrl" name="songUrl" data-id="songUrl" placeholder="Song URL">
+                        </div>
+                        <div class="col">
+                          <input type="text" class="form-control songName" name="songName" data-id="songName" placeholder="Song Name">
+                        </div>
+                      </div>
+                    </div>            
+                    <div class="modal-footer noborder">
+                      <button type="button" class="btn btn-danger addanother"><i class="fas fa-plus-circle"></i><span> Add Another Song</span>
+                      </button>
+                      <span class="float-sm-right"><button class="btn btn-danger" data-dismiss="modal" id="saveSinglePlayList" type="button">Finish and Update</button></span>
+                    </div>
+                  </div>
+                </div>
+      
+              </div>
+            </div>
+            <!-- end of step 2 -->
+    </div>
+  </div>
+</div>
+
+<!-- END model edit songs of playlist-->
+
+<!-- Edit playlist name and image Modal -->
+
+<div class="modal fade" id="editPlaylist" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content">      
+      <div class="modal-header">
+        <h5 class="modal-title">Edit Playlist</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-sm-8">
+            <form>
+              <div class="form-group">
+                <label for="playlistName">Playlist Name</label>
+                <input type="text" class="form-control" name="playlistName" id="playlistSingleName" placeholder="e.g. Blood Sugar Sex Magic">
+              </div>
+              <div class="form-group">
+                <label for="formGroupExampleInput2">Playlist URL</label>
+                <input type="text" class="form-control" name="playlistUrl" id="playlistSingleUrl" placeholder="http://" onfocusout="displayImage(this)">
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-danger" id="updatePlaylist" data-dismiss="modal">Update</button>                  
+              </div>
+            </form>
+          </div>
+          <div class="col-sm-4 ">
+            <img id="playlistSingleImg" src="images/placeholder.jpg" width="230" height="230">
+          </div>
+        </div>
+      </div>      
+    </div>
+  </div>
+</div>
+<!-- END Edit playlist name and image Modal -->
+
+</body>
+</html>
+
+
+
+    
+
