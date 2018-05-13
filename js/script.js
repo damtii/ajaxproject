@@ -17,6 +17,8 @@ $(document).ready(function () {
 
   });
 
+// Add another line for new song on the edit modal
+
   $(".addanother").click(function () {
     let song = `
           <div class="row list">
@@ -30,6 +32,9 @@ $(document).ready(function () {
     $('#songSingleListWrapper').append(song);
 
   });
+
+// END OF add another line for new song on the edit modal
+  
 
   $(".nav-link").click(function () {
     $(".step2").hide();

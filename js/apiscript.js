@@ -275,46 +275,92 @@ $.ajax({
 }); 
 
 
+
 // END OF updating the playlist name and image
+
+// appending song to the last line
+
+function appendSong(songFromApi){
+
+    let song = `
+          <div class="row list">
+            <div class="col">
+                <input type="text" class="form-control" value="${songFromApi.url}" data-id="songUrl" placeholder="Song URL">
+              </div>
+              <div class="col">
+                <input type="text" class="form-control" value="${songFromApi.name}" data-id="songName"  placeholder="Song Name">
+              </div>
+          </div>`;
+
+    $('#songSingleListWrapper').append(song);
+}
 
 // Update the song list of a single playlist
 
 $( "div" ).on( "click", ".fa-pencil-alt", function() {  
     let id = $(this).attr('data-id');
+    $('#songSingleListWrapper').html('');
     let songName = '';
     let songUrl = '';
-    let songs = [];
-               
+          
     $.get(`http://localhost:8080/ajaxproject/api/playlist/${id}/songs`, function (data, status) {           
         for (let item in data['data']['songs']) {
         songName = data['data']['songs'][item]['name'];
         songUrl = data['data']['songs'][item]['url']; 
-        console.log(songName);
-        console.log(songUrl); 
-        
-        $( "input" ).each(function( ) {
-            if ($(this).data("id") === 'songUrl') {
-                $('.songUrl').val(songUrl);
-            }
-            if ($(this).data("id") === 'songName') {
-                $('.songName').val(songName);
-            }
-          });
-
-          alert();
-
+        let mydata = data['data']['songs'][item];       
+        appendSong(mydata);
          
         }
     });        
-});
+
     
     
 // END OF Update the song list of a single playlist
 
+// saving the updated songs list
+$('#saveSinglePlayList').click(function () {
+
+let songs = [];
+$('#songSingleListWrapper').children().each(function (index) {
+
+    let songName = '';
+    let songUrl = '';
+    $('input', $(this)).each(function () {
+      if ($(this).data("id") === 'songUrl') {
+        songUrl = $(this).val();
+      }
+      if ($(this).data("id") === 'songName') {
+        songName = $(this).val();
+      }
+    });
+    songs.push({"name": songName, "url": songUrl});
+  });
+
+let data = {
+  "songs": songs
+};
 
 
+$.ajax({
+    type: "POST",
+    url: `http://localhost:8080/ajaxproject/api/playlist/${id}/songs`,
+    data: data,      
+    success: function (data, status){      
+
+//adding the get call in order to see the new added playlist
+
+   // $('input').val(""); //reset the values of the fields 
+  //  showAllPlaylist();
+    },     
+    failure: function(errMsg) {
+      alert("error on sending JSON");     
+  }
+        });
+    });
+});
 
 
+// END OF saving the updated songs list
 
 
 
