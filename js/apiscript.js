@@ -43,7 +43,7 @@ $(document).ready(function () {
                                 </div>                  
                                 <div class="col-sm-12 mx-auto playicon">
                                     <a href="#play">
-                                        <i class="fas fa-play-circle"></i>                        
+                                        <i class="fas fa-play-circle" data-id=${id}></i>                        
                                     </a>
                                 </div> 
                                 
@@ -78,25 +78,8 @@ $(document).ready(function () {
   
                     <div class="roundimage" id="rotate"></div>             
             </div>
-            <div class="col-sm-8">
-                <div class="myplayer">
-                    <audio controls>
-                        <source src="http://rockdesign.co.il/songs/01.mp3" type="audio/mpeg">             
-                            Your browser does not support the audio element.
-                    </audio>
-                </div>
-  
-                <div class="belowplayer">                                
-                    <p id="songName">Now Playing: Love Yourself</p>
-                    <ol>
-                        <li>song 1</li>
-                        <li>song 2</li>
-                        <li>song 3</li>
-                        <li>song 4</li>
-                        <li>song 5</li>
-                        <li>song 6</li>
-                    </ol> 
-                </div>
+            <div class="col-sm-8 playerRightSide">
+                
             </div>
         </div>
     </div>
@@ -299,22 +282,16 @@ function appendSong(songFromApi){
 
 $( "div" ).on( "click", ".fa-pencil-alt", function() {  
     let id = $(this).attr('data-id');
-    $('#songSingleListWrapper').html('');
+    $('#songSingleListWrapper').html(''); // removing the input fields so there won't be first empty line.
     let songName = '';
     let songUrl = '';
           
     $.get(`http://localhost:8080/ajaxproject/api/playlist/${id}/songs`, function (data, status) {           
         for (let item in data['data']['songs']) {
-        songName = data['data']['songs'][item]['name'];
-        songUrl = data['data']['songs'][item]['url']; 
         let mydata = data['data']['songs'][item];       
-        appendSong(mydata);
-         
+        appendSong(mydata); //using the function to append the songs. 
         }
-    });        
-
-    
-    
+    });             
 // END OF Update the song list of a single playlist
 
 // saving the updated songs list
@@ -322,9 +299,6 @@ $('#saveSinglePlayList').click(function () {
 
 let songs = [];
 $('#songSingleListWrapper').children().each(function (index) {
-
-    let songName = '';
-    let songUrl = '';
     $('input', $(this)).each(function () {
       if ($(this).data("id") === 'songUrl') {
         songUrl = $(this).val();
@@ -340,17 +314,11 @@ let data = {
   "songs": songs
 };
 
-
 $.ajax({
     type: "POST",
     url: `http://localhost:8080/ajaxproject/api/playlist/${id}/songs`,
     data: data,      
     success: function (data, status){      
-
-//adding the get call in order to see the new added playlist
-
-   // $('input').val(""); //reset the values of the fields 
-  //  showAllPlaylist();
     },     
     failure: function(errMsg) {
       alert("error on sending JSON");     
@@ -361,6 +329,72 @@ $.ajax({
 
 
 // END OF saving the updated songs list
+
+// Update the song list of a single playlist
+
+$( "div" ).on( "click", ".fa-play-circle", function() {     
+    let id = $(this).attr('data-id');
+    let songName = '';
+    let songUrl = '';
+
+    function appendSong(songFromData){
+
+        let song = `
+              <div class="row list">
+                <div class="col">
+                    <input type="text" class="form-control" value="${songFromApi.url}" data-id="songUrl" placeholder="Song URL">
+                  </div>
+                  <div class="col">
+                    <input type="text" class="form-control" value="${songFromApi.name}" data-id="songName"  placeholder="Song Name">
+                  </div>
+              </div>`;
+    
+        $('#songSingleListWrapper').append(song);
+    }
+
+
+
+          
+    $.get(`http://localhost:8080/ajaxproject/api/playlist/${id}/songs`, function (data, status) {           
+        for (let item in data['data']['songs']) {
+        let allSongs = data['data']['songs'][item];         
+        }
+        let firstSongUrl = data['data']['songs'][0].url; 
+        let firstSongName = data['data']['songs'][0].name; 
+
+        let results = `
+        <div class="myplayer">
+            <audio controls>
+                <source src="${firstSongUrl}" type="audio/mpeg">             
+                Your browser does not support the audio element.
+            </audio>
+        </div>  
+
+        <div class="belowplayer">                                
+            <p id="songName">Now Playing: ${firstSongName}</p>
+                <ol class="songsofplaylist">                
+               <li><i class="fas fa-play"></i>song 1</li>
+                    <li>song 2</li>
+                    <li>song 3</li>
+                    <li>song 4</li>
+                    <li>song 5</li>
+                    <li>song 6</li>
+                </ol> 
+        </div>
+        
+        `;
+
+        $('.playerRightSide').html(results);
+        
+        
+    });
+// END OF Update the song list of a single playlist
+
+
+}); 
+
+
+
 
 
 

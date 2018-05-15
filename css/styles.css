@@ -301,3 +301,10 @@ span.float-sm-right {
       -webkit-transform: rotate(359deg);
   }
 }
+
+/* adding play icon to the list of songs */
+li::before {
+list-style: none;
+display: inline-block;
+margin-left: -1.3em;
+}
