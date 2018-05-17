@@ -330,78 +330,83 @@ $.ajax({
 
 // END OF saving the updated songs list
 
+
+function playSong() {
+    $('#audio').trigger('play');
+}
+
+function PauseSong() {
+    $('#audio').trigger('Pause');
+}
+
+
 // Update the song list of a single playlist
 
 $( "div" ).on( "click", ".fa-play-circle", function() {     
     let id = $(this).attr('data-id');
     let songName = '';
     let songUrl = '';
+    let allSongs = [];
 
-    function appendSong(songFromData){
-
-        let song = `
-              <div class="row list">
-                <div class="col">
-                    <input type="text" class="form-control" value="${songFromApi.url}" data-id="songUrl" placeholder="Song URL">
-                  </div>
-                  <div class="col">
-                    <input type="text" class="form-control" value="${songFromApi.name}" data-id="songName"  placeholder="Song Name">
-                  </div>
-              </div>`;
-    
-        $('#songSingleListWrapper').append(song);
+    function appendSongList(songFromData){
+        var songDetails = `<li class="playThisSong" songItemUrl='${songFromData.url}' songItemName='${songFromData.name}'>${songFromData.name}</li>`;
+        $('.songsOfPlaylist').append(songDetails);
     }
-
-
 
           
     $.get(`http://localhost:8080/ajaxproject/api/playlist/${id}/songs`, function (data, status) {           
-        for (let item in data['data']['songs']) {
-        let allSongs = data['data']['songs'][item];         
-        }
+        
         let firstSongUrl = data['data']['songs'][0].url; 
         let firstSongName = data['data']['songs'][0].name; 
 
         let results = `
         <div class="myplayer">
-            <audio controls>
-                <source src="${firstSongUrl}" type="audio/mpeg">             
+            <audio id="audio" controls>
+                <source id="src" src="${firstSongUrl}" type="audio/mpeg">             
                 Your browser does not support the audio element.
             </audio>
         </div>  
 
         <div class="belowplayer">                                
             <p id="songName">Now Playing: ${firstSongName}</p>
-                <ol class="songsofplaylist">                
-               <li><i class="fas fa-play"></i>song 1</li>
-                    <li>song 2</li>
-                    <li>song 3</li>
-                    <li>song 4</li>
-                    <li>song 5</li>
-                    <li>song 6</li>
-                </ol> 
-        </div>
-        
+                <ol class="songsOfPlaylist"></ol> 
+        </div>        
         `;
 
         $('.playerRightSide').html(results);
-        
+playSong();
+        for (let item in data['data']['songs']) {
+            allSongs = data['data']['songs'][item];   
+            appendSongList(allSongs);
+            }
         
     });
 // END OF Update the song list of a single playlist
 
 
 }); 
+    
 
+// adding a link between the song item to the player so on click on any item, the right song will be played. 
 
+$( "div" ).on( "click", ".playThisSong", function() {     
+        let href = $(this).attr('songItemUrl');    
+        let audioUrl = $('#src').attr('src');
+        let name = $(this).attr('songItemName'); 
+        audioUrl = href;   
 
+        let changeSongUrl = `
+                <audio id="audio" controls>
+                    <source id="src" src="${audioUrl}" type="audio/mpeg">             
+                    Your browser does not support the audio element.
+                </audio>
+        `;
+        
+        $('.myplayer').html(changeSongUrl);   
+        $('#songName').text(`Now Playing: ${name}`);    
 
-
-
-
-
-
-
+        playSong();
+    });
 
 
 });
