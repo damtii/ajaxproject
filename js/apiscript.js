@@ -331,9 +331,7 @@ $.ajax({
 // END OF saving the updated songs list
 
 
-function playSong() {
-    $('#audio').trigger('play');
-}
+
 
 function PauseSong() {
     $('#audio').trigger('Pause');
@@ -361,7 +359,7 @@ $( "div" ).on( "click", ".fa-play-circle", function() {
 
         let results = `
         <div class="myplayer">
-            <audio id="audio" controls>
+            <audio id="audio" controls autoplay>
                 <source id="src" src="${firstSongUrl}" type="audio/mpeg">             
                 Your browser does not support the audio element.
             </audio>
@@ -374,7 +372,11 @@ $( "div" ).on( "click", ".fa-play-circle", function() {
         `;
 
         $('.playerRightSide').html(results);
-playSong();
+        
+        $('#audio').bind('ended', function(){
+            // alert('song end!!!');
+        });        
+
         for (let item in data['data']['songs']) {
             allSongs = data['data']['songs'][item];   
             appendSongList(allSongs);
@@ -383,30 +385,26 @@ playSong();
     });
 // END OF Update the song list of a single playlist
 
+//  on click on any item, the right song will be played. 
+
+$( "div" ).on( "click", ".playThisSong", function() {     
+    let href = $(this).attr('songItemUrl');    
+    let name = $(this).attr('songItemName'); 
+
+    $('audio').attr('src', href) //changing song URL
+    $('#songName').text(`Now Playing: ${name}`);    // changing song name
+
+    
+    $('#audio').bind('ended', function(){
+        // alert('song end!!!');         
+    });        
+
+});
 
 }); 
     
 
-// adding a link between the song item to the player so on click on any item, the right song will be played. 
 
-$( "div" ).on( "click", ".playThisSong", function() {     
-        let href = $(this).attr('songItemUrl');    
-        let audioUrl = $('#src').attr('src');
-        let name = $(this).attr('songItemName'); 
-        audioUrl = href;   
-
-        let changeSongUrl = `
-                <audio id="audio" controls>
-                    <source id="src" src="${audioUrl}" type="audio/mpeg">             
-                    Your browser does not support the audio element.
-                </audio>
-        `;
-        
-        $('.myplayer').html(changeSongUrl);   
-        $('#songName').text(`Now Playing: ${name}`);    
-
-        playSong();
-    });
 
 
 });
