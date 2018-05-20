@@ -403,7 +403,67 @@ $( "div" ).on( "click", ".playThisSong", function() {
 
 }); 
     
+// search box functions 
 
+$('#searchBox').keyup(function(){
+
+    if($('#searchBox').val().length >2){
+    $('#allplaylist').html('');
+    let searchTextByUser = $('#searchBox').val();
+    let expression = new RegExp(searchTextByUser, 'i');
+    $.get("http://localhost:8080/ajaxproject/api/playlist", function (data, status) {
+
+        for (let item in data['data']) {            
+            name = data['data'][item]['name'];
+            image = data['data'][item]['image'];
+            songs = data['data'][item]['songs'];
+            id = data['data'][item]['id'];           
+            let myresults='';
+        
+            myresults += `       
+            <div class="col-sm-3 mx-auto">
+                <div class="container text-center">
+                    <div class="arc-wrapper">
+                        <h3 class="round">${name}</h3>                 
+                        <div class="overlay">  
+                            <div class="row">                                                                      
+                                <div class="col-sm-6 mx-auto editicon">                                                                        
+                                    <a href="#edit" data-toggle="modal" data-id=${id} data-target="#editPlaylist">                   
+                                        <i class="far fa-edit" data-id=${id}></i>                                           
+                                    </a>                                        
+                                </div> 
+                                <div class="col-sm-6 mx-auto deleteicon"> 
+                                    <a href="#delete" data-toggle="modal" data-id=${id} data-target="#deletePopup">                                           
+                                        <i class="fas fa-trash" data-id=${id}></i>                        
+                                    </a>
+                                </div>  
+                            </div>                  
+                            <div class="col-sm-12 mx-auto playicon">
+                                <a href="#play">
+                                    <i class="fas fa-play-circle" data-id=${id}></i>                        
+                                </a>
+                            </div> 
+                            
+                            
+                        </div>
+                        <div class="image">
+                            <img src="${image}" class="rounded-circle" alt="${name}" >
+                        </div>                
+                    </div>
+                </div> 
+            </div> 
+            
+            `;
+        if(name.search(expression) != -1) {                        
+            $('#allplaylist').append(myresults);
+        } 
+    }      
+    });
+
+}else {
+    showAllPlaylist();
+}
+});
 
 
 
